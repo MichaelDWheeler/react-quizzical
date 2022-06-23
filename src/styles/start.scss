@@ -1,0 +1,52 @@
+@import './vars.scss';
+
+.start {
+  display: flex;
+  position: relative;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  width: 550px;
+  height: 550px;
+  flex-wrap: wrap;
+  background-color: $white;
+  background-repeat: no-repeat;
+  background-position: top right;
+
+  &__blob {
+    &-yellow {
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+    &-purple {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+    }
+  }
+
+  &__btn {
+    width: 193px;
+    height: 52px;
+    border-radius: 15px;
+    background-color: $btn-bg;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+  }
+
+  &__desc {
+    @include centered-text;
+    margin: 12px 0 30px 0;
+    font-family: 'Inter', sans-serif;
+    color: $text-color;
+  }
+
+  &__title {
+    @include centered-text;
+    margin: 0;
+    font-family: 'Karla', sans-serif;
+    color: $text-color;
+  }
+}

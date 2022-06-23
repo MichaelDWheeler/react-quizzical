@@ -1,0 +1,15 @@
+@import './vars.scss';
+
+.questions {
+  display: flex;
+  position: relative;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  width: 550px;
+  height: 550px;
+  flex-wrap: wrap;
+  background-color: $white;
+  background-repeat: no-repeat;
+  background-position: top right;
+}
