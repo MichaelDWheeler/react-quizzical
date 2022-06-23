@@ -9,8 +9,8 @@ export default function Start(props) {
             <h1 className="start__title">Quizzical</h1>
             <p className="start__desc">Test your knowledge with random trivia questions.</p>
             <button className="start__btn" type="button" onClick={props.startQuiz}>Start quiz</button>
-            <img className="start__blob-yellow" src={blobYellow}/>
-            <img className="start__blob-purple" src={blobPurple}/>
+            <img className="start__blob-yellow" src={blobYellow} alt="yellow blob"/>
+            <img className="start__blob-purple" src={blobPurple} alt="purple blob"/>
         </div>
     )
 }
