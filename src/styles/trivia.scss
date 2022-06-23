@@ -1,5 +1,12 @@
+@import '../styles/vars.scss';
+
 .trivia {
-  width: 550px;
-  height: 550px;
-  overflow:scroll;
+  padding: 45px 75px;
+  min-height: 550px;
+  &__title {
+    color: $text-color;
+    font-family: 'Karla', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+  }
 }
