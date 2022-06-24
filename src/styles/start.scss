@@ -1,5 +1,21 @@
 @import './vars.scss';
 
+.flip-in-hor-bottom {
+  position: absolute;
+  top: 19px;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+}
+.flip-out-hor-top {
+  position: absolute;
+  top: 19px;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+}
 .start {
   display: flex;
   position: relative;
@@ -27,6 +43,7 @@
   }
 
   &__btn {
+    position: relative;
     width: 193px;
     height: 52px;
     border-radius: 15px;

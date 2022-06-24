@@ -20,6 +20,10 @@
     }
   }
 
+  &__selected {
+    background-color: $selected;
+  }
+
   &__title {
     color: $text-color;
     font-family: 'Karla', sans-serif;

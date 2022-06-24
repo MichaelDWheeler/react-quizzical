@@ -10,31 +10,48 @@ function App() {
   const [question, setQuestion] = useState([]);
   const [html, setHtml] = useState([]);
 
-  function mixQuestionsOrder(correct, incorrect) {
+  function mixQuestionsOrder(correct, incorrect, id) {
     const questionArr = [];
+
     questionArr.push({
+      parentId: id,
       answer: correct,
       selected: false,
       id: nanoid()
     });
+
     incorrect.forEach(element => {
       questionArr.push({
+        parentId: id,
         answer: element,
         selected: false,
         id: nanoid()
       });
     });
+
     questionArr.sort(() => Math.random() - 0.5);
+
     return questionArr;
   }
 
-  function setAnswer(id) {
-    // set the question state to reflect that the allQuestions array with the matching id have the
-    // selected value as opposite of what it currently is so the user can select/deselect the button
-    question.forEach((item) => {
-      item.allQuestions.forEach((entry) => {
-        if (entry.id === id) {
-          console.log(entry.answer) //state needs to change so the entry.selected = !entry.selected
+
+
+  function setAnswer(id, parentId) {
+    setQuestion(prevQuestion =>{
+      return prevQuestion.map(item =>{
+        item.allQuestions.forEach(itemProps=>{
+          // only allow one selection per question
+          if(itemProps.parentId === parentId) {
+            itemProps.selected = false;
+          }
+          // toggle selected property
+          if(itemProps.id === id) {
+            itemProps.selected = !itemProps.selected;
+            return itemProps
+          }
+        })
+        return {
+          ...item
         }
       })
     })
@@ -42,8 +59,10 @@ function App() {
 
   function button(answers) {
     const answerArr = answers.allQuestions.map((item) => {
-      return (<button className="trivia__btn" key={item.id} onClick={() => {
-        setAnswer(item.id)
+      return (<button className={`trivia__btn${item.selected ? ' trivia__selected' : ''}`} key={item.id} onClick={(event) => {
+        event.preventDefault();
+        console.log(answers.allQuestions.id)
+        setAnswer(item.id, item.parentId);
       }}>{he.decode(item.answer)}</button>);
     });
     return answerArr
@@ -52,14 +71,15 @@ function App() {
   useEffect(() => {
     fetch('https://opentdb.com/api.php?amount=5')
       .then(res => res.json())
-      .then(question => setQuestion(question.results))
+      .then(data => setQuestion(data.results))
       .then(() => {
         setQuestion(prevQuestion => {
-          return prevQuestion.map((question => {
+          return prevQuestion.map((item => {
+            const parentId = nanoid();
             return {
-              ...question,
-              allQuestions: mixQuestionsOrder(question.correct_answer, question.incorrect_answers),
-              id: nanoid(),
+              ...item,
+              id: parentId,
+              allQuestions: mixQuestionsOrder(item.correct_answer, item.incorrect_answers, parentId),
               answeredCorrectly: false
             }
           }))
@@ -80,18 +100,24 @@ function App() {
         }))
       )
     });
-    console.log(JSON.stringify(question, null, 2));
+    // console.log(JSON.stringify(question, null, 2));
     // console.log(html);
 
   }, [question])
 
   function startQuiz(){
-    setStage(2);
+    setTimeout(() => {
+      if(html.length === 5) {
+        setStage(2);
+      }
+    }, 500);
+
   }
+
 
   return (
     <div className="App">
-      {stage === 1 && <Start startQuiz={startQuiz}/>}
+      {stage === 1 && <Start startQuiz={startQuiz} html={html}/>}
       {stage === 2 && <Questions html={html} />}
     </div>
   );

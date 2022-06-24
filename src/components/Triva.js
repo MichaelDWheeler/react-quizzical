@@ -1,5 +1,4 @@
 import React from 'react'
-
 import '../styles/trivia.scss';
 
 function Trivia(props) {
