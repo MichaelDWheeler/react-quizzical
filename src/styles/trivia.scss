@@ -4,6 +4,11 @@
   padding: 45px 75px;
   min-height: 550px;
 
+  > div {
+    padding-bottom: 20px;
+    border-bottom: 1px solid $divider;
+  }
+
   &__btn {
     margin-right: 12px;
     height: 20.65px;
@@ -15,8 +20,21 @@
     border-radius: 7.94px;
     color: $text-color;
     cursor: pointer;
+
     &:last-of-type {
       margin-right: 0;
+    }
+
+    &-check {
+      display: block;
+      margin: 20px auto;
+      width: 120px;
+      height: 35px;
+      background-color: $btn;
+      border: none;
+      border-radius: 10px;
+      color: $white;
+      cursor: pointer;
     }
   }
 
@@ -29,5 +47,10 @@
     font-family: 'Karla', sans-serif;
     font-size: 16px;
     font-weight: 700;
+    &.checked {
+      &.not__attempted {
+        color: red;
+      }
+    }
   }
 }

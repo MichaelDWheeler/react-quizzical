@@ -8,7 +8,7 @@ export default function Questions(props) {
 
     return (
         <div className="questions">
-            <Trivia html={props.html} />
+            <Trivia checkAnswers={props.checkAnswers} html={props.html} />
             <img className='questions__blob-yellow' src={smallBlobYellow} alt="small yellow blob" width='162' height='187' />
             <img className='questions__blob-purple' src={smallBlobPurple} alt="small purple blob" width='65' height='62' />
         </div>

@@ -8,6 +8,7 @@ function Trivia(props) {
   return (
     <div className="trivia">
       {props.html}
+      <button className='trivia__btn-check' type="button" onClick={props.checkAnswers}>Check answers</button>
     </div>
   )
 }

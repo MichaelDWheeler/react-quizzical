@@ -37,19 +37,22 @@ function App() {
 
 
   function setAnswer(id, parentId) {
-    setQuestion(prevQuestion =>{
-      return prevQuestion.map(item =>{
-        item.allQuestions.forEach(itemProps=>{
+    setQuestion(prevQuestion => {
+      return prevQuestion.map(item => {
+        item.allQuestions.forEach(itemProps => {
           // only allow one selection per question
-          if(itemProps.parentId === parentId) {
+          if (itemProps.parentId === parentId) {
             itemProps.selected = false;
           }
           // toggle selected property
-          if(itemProps.id === id) {
+          if (itemProps.id === id) {
             itemProps.selected = !itemProps.selected;
+            itemProps.answer === item.correct_answer ? item.answeredCorrectly = true : item.answeredCorrectly = false;
+            itemProps.selected ? item.attemptedToAnswer = true : item.attemptedToAnswer = false;
             return itemProps
           }
         })
+
         return {
           ...item
         }
@@ -57,16 +60,7 @@ function App() {
     })
   }
 
-  function button(answers) {
-    const answerArr = answers.allQuestions.map((item) => {
-      return (<button className={`trivia__btn${item.selected ? ' trivia__selected' : ''}`} key={item.id} onClick={(event) => {
-        event.preventDefault();
-        console.log(answers.allQuestions.id)
-        setAnswer(item.id, item.parentId);
-      }}>{he.decode(item.answer)}</button>);
-    });
-    return answerArr
-  }
+
 
   useEffect(() => {
     fetch('https://opentdb.com/api.php?amount=5')
@@ -80,7 +74,9 @@ function App() {
               ...item,
               id: parentId,
               allQuestions: mixQuestionsOrder(item.correct_answer, item.incorrect_answers, parentId),
-              answeredCorrectly: false
+              answeredCorrectly: false,
+              attemptedToAnswer: false,
+              checked: false
             }
           }))
         })
@@ -88,37 +84,73 @@ function App() {
   }, [])
 
   useEffect(() => {
+
+    function button(answers) {
+      const answerArr = answers.allQuestions.map((item) => {
+        return (<button className={`trivia__btn${item.selected ? ' trivia__selected' : ''}`} key={item.id} onClick={(event) => {
+          event.preventDefault();
+          setAnswer(item.id, item.parentId);
+        }}>{he.decode(item.answer)}</button>);
+      });
+      return answerArr
+    }
+
     setHtml(() => {
       return (
         question.map((item => {
           return (
             <div key={item.id}>
-              <p className="trivia__title">{he.decode(item.question)}</p>
+              <p className=
+                {`trivia__title${item.attemptedToAnswer ? ' attempted' : ' not__attempted'}${item.checked ? ' checked' : ''}`}>
+                {he.decode(item.question)}
+              </p>
               {button(item)}
             </div>
           )
         }))
       )
     });
-    // console.log(JSON.stringify(question, null, 2));
+
     // console.log(html);
 
   }, [question])
 
-  function startQuiz(){
+  function startQuiz() {
     setTimeout(() => {
-      if(html.length === 5) {
+      if (html.length === 5) {
         setStage(2);
       }
-    }, 500);
+    }, 200);
 
   }
 
+  function showResults() {
+    console.log('Showing the results');
+  }
+  function checkAnswers() {
+    // changed checked state to true
+    // style using .checked.not__attempted vs .checked.attempted
+    // .checked.not__attempted will have red heading
+    setQuestion(prevQuestion => {
+      return prevQuestion.map(item => {
+        return {
+          ...item,
+          checked: true
+        }
+      })
+    })
+    const allQuestionsAttempted = question.every(item => item.attemptedToAnswer);
+    // if attemptedToAnswer is true for every state, proceed
+    // if attemptedToAnswer = false for any state, do not proceed
+
+    if (allQuestionsAttempted)
+      showResults()
+  }
 
   return (
     <div className="App">
-      {stage === 1 && <Start startQuiz={startQuiz} html={html}/>}
-      {stage === 2 && <Questions html={html} />}
+      {stage === 1 && <Start startQuiz={startQuiz} html={html} />}
+      {stage === 2 && <Questions checkAnswers={checkAnswers} html={html} />}
     </div>
   );
 }
