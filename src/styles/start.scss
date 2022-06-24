@@ -6,7 +6,7 @@
   align-items: center;
   align-content: center;
   justify-content: center;
-  width: 550px;
+  min-width: 1000px;
   height: 550px;
   flex-wrap: wrap;
   background-color: $white;
@@ -30,7 +30,7 @@
     width: 193px;
     height: 52px;
     border-radius: 15px;
-    background-color: $btn-bg;
+    background-color: $btn;
     color: #fff;
     border: none;
     cursor: pointer;

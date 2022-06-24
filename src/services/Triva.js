@@ -25,10 +25,24 @@ function Trivia() {
     return questionArr;
   }
 
+  function setAnswer(id) {
+    // set the question state to reflect that the allQuestions array with the matching id have the
+    // selected value as opposite of what it currently is so the user can select/deselect the button
+   question.forEach((item)=>{
+    item.allQuestions.forEach((entry)=>{
+      if(entry.id === id) {
+        console.log(entry.answer) //state needs to change so the entry.selected = !entry.selected
+      }
+    })
+   })
+  }
+
   function button(answers){
     const answerArr = [];
     answers.allQuestions.forEach((item)=>{
-      answerArr.push(<button>{he.decode(item.answer)}</button>)
+      answerArr.push(<button className="trivia__btn" key={item.id} onClick={()=>{
+        setAnswer(item.id)
+      }}>{he.decode(item.answer)}</button>)
     })
     return answerArr
   }
@@ -64,7 +78,7 @@ function Trivia() {
         }))
       )
     });
-    // console.log(JSON.stringify(question, null, 2));
+    console.log(JSON.stringify(question, null, 2));
     // console.log(html);
 
   }, [question])

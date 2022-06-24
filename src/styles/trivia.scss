@@ -3,6 +3,23 @@
 .trivia {
   padding: 45px 75px;
   min-height: 550px;
+
+  &__btn {
+    margin-right: 12px;
+    height: 20.65px;
+    padding: 0 15px;
+    font-family: 'Inter', sans-serif;
+    font-size: 10.24px;
+    font-weight: 500;
+    border: 1px solid $btn;
+    border-radius: 7.94px;
+    color: $text-color;
+    cursor: pointer;
+    &:last-of-type {
+      margin-right: 0;
+    }
+  }
+
   &__title {
     color: $text-color;
     font-family: 'Karla', sans-serif;
