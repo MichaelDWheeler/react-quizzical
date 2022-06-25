@@ -25,4 +25,76 @@
       left: 0;
     }
   }
+
+  &__inner {
+    padding: 45px 75px;
+    min-height: 550px;
+
+    > div {
+      padding-bottom: 20px;
+      border-bottom: 1px solid $divider;
+      &:last-of-type {
+        border-bottom:none;
+      }
+    }
+
+    &-btn {
+      margin-right: 12px;
+      height: 20.65px;
+      padding: 0 15px;
+      font-family: 'Inter', sans-serif;
+      font-size: 10.24px;
+      font-weight: 500;
+      border: 1px solid $btn;
+      border-radius: 7.94px;
+      color: $text-color;
+      cursor: pointer;
+
+      &:last-of-type {
+        margin-right: 0;
+      }
+
+      &-check {
+        display: inline-block;
+        width: 120px;
+        height: 35px;
+        background-color: $btn;
+        border: none;
+        border-radius: 10px;
+        color: $white;
+        cursor: pointer;
+      }
+    }
+
+    &-selected {
+      background-color: $selected;
+    }
+
+    &-title {
+      color: $text-color;
+      font-family: 'Karla', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      &.checked {
+        &.not__attempted {
+          color: red;
+        }
+      }
+    }
+  }
+
+  &__score {
+    margin-right: 20px;
+    color: $text-color;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+  }
+
+  &__status {
+    display: flex;
+    margin-top: 20px;
+    flex-wrap:nowrap;
+    align-items: center;
+    justify-content: center;
+  }
 }
