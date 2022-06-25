@@ -1,12 +1,11 @@
+@import './styles/vars.scss';
+
 * {
   box-sizing: border-box;
 }
 
-body {
-  display: flex;
-  height: 100vh;
-  width: 100vw;
-  align-items:center;
-  justify-content: center;
-  background-color: #000;
+.App {
+  margin: 20px auto;
+  max-width: 1600px;
+  width: 100%;
 }

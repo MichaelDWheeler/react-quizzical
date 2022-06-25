@@ -6,8 +6,6 @@
   align-items: center;
   align-content: center;
   justify-content: center;
-  min-height: 550px;
-  min-width: 1000px;
   flex-wrap: wrap;
   background-color: $white;
   background-repeat: no-repeat;
@@ -29,6 +27,7 @@
   &__inner {
     padding: 45px 75px;
     min-height: 550px;
+    box-sizing: border-box;
 
     > div {
       padding-bottom: 20px;

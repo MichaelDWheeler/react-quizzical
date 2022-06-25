@@ -4,9 +4,11 @@
 // font-family: 'Karla', sans-serif;
 
 @mixin centered-text {
-  width: 100%;
+  flex: 0 0 100%;
   text-align:center;
 }
+
+$sm-viewport: "only screen and (max-width : 1599px)";
 
 $btn: #4D5B9E;
 $correct: #94D7A2;

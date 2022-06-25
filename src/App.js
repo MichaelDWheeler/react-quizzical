@@ -35,23 +35,7 @@ function App() {
       })
   }, [])
 
-  // const buttons = useCallback((answers)=>{
-  //   const answerArr = answers.allQuestions.map((item) => {
-  //     return (<button className={`questions__inner-btn${item.selected ? ' questions__inner-selected' : ''}${questionsChecked ? ' checked' : ''}${questionsChecked && answers.correct_answer === item.answer ? ' correct' : ''}`}
-  //       key={item.id}
-  //       onClick={(event) => {
-  //         event.preventDefault();
-  //         setAnswer(item.id, item.parentId);
-  //       }}>{he.decode(item.answer)}</button>);
-  //   });
-  //   return answerArr
-  // }, [questionsChecked])
-
-  useEffect(() => {
-    getTriviaQuestions();
-  }, [getTriviaQuestions, gamesPlayed])
-
-  useEffect(() => {
+  const createHtml = useCallback(()=>{
     function button(answers) {
       const answerArr = answers.allQuestions.map((item) => {
         return (<button className={`questions__inner-btn${item.selected ? ' questions__inner-selected' : ''}${questionsChecked ? ' checked' : ''}${questionsChecked && answers.correct_answer === item.answer ? ' correct' : ''}`}
@@ -79,8 +63,15 @@ function App() {
         }))
       )
     });
-
   }, [question, questionsChecked])
+
+  useEffect(() => {
+    getTriviaQuestions();
+  }, [getTriviaQuestions, gamesPlayed])
+
+  useEffect(() => {
+    createHtml();
+  }, [createHtml, question, questionsChecked])
 
   function mixQuestionsOrder(correct, incorrect, id) {
     const questionArr = [];
@@ -155,8 +146,7 @@ function App() {
         game: prevGame.game++
       }
     })
-    setQuestion([]);
-    startQuiz();
+    setQuestionsChecked(false);
   }
 
   function checkAnswers() {
