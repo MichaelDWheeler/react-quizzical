@@ -11,6 +11,11 @@
   background-repeat: no-repeat;
   background-position: top right;
 
+  @media #{$mobile} {
+    min-height: 100vh;
+   }
+
+
   &__blob{
     &-yellow {
       position: absolute;

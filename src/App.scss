@@ -8,4 +8,7 @@
   margin: 20px auto;
   max-width: 1600px;
   width: 100%;
+  @media #{$mobile} {
+    margin: 0;
+  }
 }
