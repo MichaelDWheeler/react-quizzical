@@ -64,10 +64,23 @@
         color: $white;
         cursor: pointer;
       }
+
+      &.checked.correct {
+        background-color:$correct;
+      }
     }
 
     &-selected {
       background-color: $selected;
+      &.checked {
+        background-color: $incorrect;
+        opacity: 0.65;
+
+        &.correct {
+          background-color:$correct;
+          opacity: 1;
+        }
+      }
     }
 
     &-title {

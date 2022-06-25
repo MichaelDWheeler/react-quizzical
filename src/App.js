@@ -1,5 +1,5 @@
 import './App.scss';
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useCallback} from 'react'
 import Start from './components/Start';
 import {nanoid} from 'nanoid';
 import he from 'he';
@@ -10,8 +10,11 @@ function App() {
   const [question, setQuestion] = useState([]);
   const [html, setHtml] = useState([]);
   const [questionsChecked, setQuestionsChecked] = useState(false);
+  const [gamesPlayed, setGamesPlayed] = useState({game: 1});
 
-  useEffect(() => {
+  console.log('rendered')
+
+  const getTriviaQuestions = useCallback(() => {
     fetch('https://opentdb.com/api.php?amount=5')
       .then(res => res.json())
       .then(data => setQuestion(data.results))
@@ -32,14 +35,31 @@ function App() {
       })
   }, [])
 
-  useEffect(() => {
+  // const buttons = useCallback((answers)=>{
+  //   const answerArr = answers.allQuestions.map((item) => {
+  //     return (<button className={`questions__inner-btn${item.selected ? ' questions__inner-selected' : ''}${questionsChecked ? ' checked' : ''}${questionsChecked && answers.correct_answer === item.answer ? ' correct' : ''}`}
+  //       key={item.id}
+  //       onClick={(event) => {
+  //         event.preventDefault();
+  //         setAnswer(item.id, item.parentId);
+  //       }}>{he.decode(item.answer)}</button>);
+  //   });
+  //   return answerArr
+  // }, [questionsChecked])
 
+  useEffect(() => {
+    getTriviaQuestions();
+  }, [getTriviaQuestions, gamesPlayed])
+
+  useEffect(() => {
     function button(answers) {
       const answerArr = answers.allQuestions.map((item) => {
-        return (<button className={`questions__inner-btn${item.selected ? ' questions__inner-selected' : ''}`} key={item.id} onClick={(event) => {
-          event.preventDefault();
-          setAnswer(item.id, item.parentId);
-        }}>{he.decode(item.answer)}</button>);
+        return (<button className={`questions__inner-btn${item.selected ? ' questions__inner-selected' : ''}${questionsChecked ? ' checked' : ''}${questionsChecked && answers.correct_answer === item.answer ? ' correct' : ''}`}
+          key={item.id}
+          onClick={(event) => {
+            event.preventDefault();
+            setAnswer(item.id, item.parentId);
+          }}>{he.decode(item.answer)}</button>);
       });
       return answerArr
     }
@@ -60,9 +80,7 @@ function App() {
       )
     });
 
-    // console.log(html);
-
-  }, [question])
+  }, [question, questionsChecked])
 
   function mixQuestionsOrder(correct, incorrect, id) {
     const questionArr = [];
@@ -92,10 +110,12 @@ function App() {
     setQuestion(prevQuestion => {
       return prevQuestion.map(item => {
         item.allQuestions.forEach(itemProps => {
+
           // only allow one selection per question
           if (itemProps.parentId === parentId) {
             itemProps.selected = false;
           }
+
           // toggle selected property
           if (itemProps.id === id) {
             itemProps.selected = !itemProps.selected;
@@ -112,7 +132,13 @@ function App() {
     })
   }
 
-
+  function correctAnswers() {
+    let count = 0;
+    question.forEach(item => {
+      if (item.answeredCorrectly) count++;
+    })
+    return count;
+  };
 
   function startQuiz() {
     setTimeout(() => {
@@ -123,8 +149,14 @@ function App() {
 
   }
 
-  function showResults() {
-    console.log(JSON.stringify(question, null, 2));
+  function playAgain() {
+    setGamesPlayed(prevGame => {
+      return {
+        game: prevGame.game++
+      }
+    })
+    setQuestion([]);
+    startQuiz();
   }
 
   function checkAnswers() {
@@ -146,11 +178,7 @@ function App() {
 
     if (allQuestionsAttempted) {
       setQuestionsChecked(true);
-      showResults()
-    } else {
-      console.log(JSON.stringify(question, null, 2));
     }
-
   }
 
   return (
@@ -160,7 +188,9 @@ function App() {
         checkAnswers={checkAnswers}
         html={html}
         question={question}
-        questionsChecked={questionsChecked}/>}
+        questionsChecked={questionsChecked}
+        playAgain={playAgain}
+        correctAnswers={correctAnswers} />}
     </div>
   );
 }
