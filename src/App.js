@@ -4,6 +4,7 @@ import Start from './components/Start';
 import {nanoid} from 'nanoid';
 import he from 'he';
 import Questions from './components/Questions';
+import Confetti from 'react-confetti'
 
 function App() {
   const [stage, setStage] = React.useState(1);
@@ -11,6 +12,9 @@ function App() {
   const [html, setHtml] = useState([]);
   const [questionsChecked, setQuestionsChecked] = useState(false);
   const [gamesPlayed, setGamesPlayed] = useState({game: 1});
+  const [showConfetti, setShowConfetti] = useState(false);
+  const isAnsweredCorrectly = (item) => item.answeredCorrectly;
+
 
   const getTriviaQuestions = useCallback(() => {
 
@@ -34,9 +38,40 @@ function App() {
           return prevQuestion.map(setQuestions)
         })
       })
+
   }, [])
 
   const createHtml = useCallback(()=>{
+    function setAnswer(id, parentId) {
+
+      const toggleAnswers = item => {
+        item.allQuestions.forEach(itemProps => {
+
+          // only allow one selection per question
+          if (itemProps.parentId === parentId) {
+            itemProps.selected = false;
+          }
+
+          // toggle selected property
+          if (itemProps.id === id) {
+            itemProps.selected = !itemProps.selected;
+            itemProps.answer === item.correct_answer ? item.answeredCorrectly = true : item.answeredCorrectly = false;
+            itemProps.selected ? item.attemptedToAnswer = true : item.attemptedToAnswer = false;
+            return itemProps
+          }
+        })
+
+        return {
+          ...item
+        }
+      }
+
+      setQuestion(prevQuestion => {
+        return prevQuestion.map(toggleAnswers)
+      })
+
+    }
+
     function button(answers) {
 
       const createButton = item => {
@@ -78,6 +113,8 @@ function App() {
 
   useEffect(() => {
     createHtml();
+    question.every(isAnsweredCorrectly) && questionsChecked ? setShowConfetti(true) : setShowConfetti(false);
+
   }, [createHtml, question, questionsChecked])
 
   function mixQuestionsOrder(correct, incorrect, id) {
@@ -104,33 +141,7 @@ function App() {
     return questionArr;
   }
 
-  function setAnswer(id, parentId) {
 
-    const toggleAnswers = item => {
-      item.allQuestions.forEach(itemProps => {
-
-        // only allow one selection per question
-        if (itemProps.parentId === parentId) {
-          itemProps.selected = false;
-        }
-
-        // toggle selected property
-        if (itemProps.id === id) {
-          itemProps.selected = !itemProps.selected;
-          itemProps.answer === item.correct_answer ? item.answeredCorrectly = true : item.answeredCorrectly = false;
-          itemProps.selected ? item.attemptedToAnswer = true : item.attemptedToAnswer = false;
-          return itemProps
-        }
-      })
-
-      return {
-        ...item
-      }
-    }
-    setQuestion(prevQuestion => {
-      return prevQuestion.map(toggleAnswers)
-    })
-  }
 
   function correctAnswers() {
     let count = 0;
@@ -182,6 +193,7 @@ function App() {
 
   return (
     <div className="App">
+      {showConfetti && <Confetti/>}
       {stage === 1 && <Start startQuiz={startQuiz} html={html} />}
       {stage === 2 && <Questions
         checkAnswers={checkAnswers}
