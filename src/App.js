@@ -12,15 +12,9 @@ function App() {
   const [questionsChecked, setQuestionsChecked] = useState(false);
   const [gamesPlayed, setGamesPlayed] = useState({game: 1});
 
-  console.log('rendered')
-
   const getTriviaQuestions = useCallback(() => {
-    fetch('https://opentdb.com/api.php?amount=5')
-      .then(res => res.json())
-      .then(data => setQuestion(data.results))
-      .then(() => {
-        setQuestion(prevQuestion => {
-          return prevQuestion.map((item => {
+
+    const setQuestions = item => {
             const parentId = nanoid();
             return {
               ...item,
@@ -30,37 +24,50 @@ function App() {
               attemptedToAnswer: false,
               checked: false
             }
-          }))
+          };
+
+    fetch('https://opentdb.com/api.php?amount=5')
+      .then(res => res.json())
+      .then(data => setQuestion(data.results))
+      .then(() => {
+        setQuestion(prevQuestion => {
+          return prevQuestion.map(setQuestions)
         })
       })
   }, [])
 
   const createHtml = useCallback(()=>{
     function button(answers) {
-      const answerArr = answers.allQuestions.map((item) => {
+
+      const createButton = item => {
         return (<button className={`questions__inner-btn${item.selected ? ' questions__inner-selected' : ''}${questionsChecked ? ' checked' : ''}${questionsChecked && answers.correct_answer === item.answer ? ' correct' : ''}`}
           key={item.id}
           onClick={(event) => {
             event.preventDefault();
             setAnswer(item.id, item.parentId);
           }}>{he.decode(item.answer)}</button>);
-      });
+      }
+
+      const answerArr = answers.allQuestions.map(createButton);
       return answerArr
     }
 
     setHtml(() => {
+
+      const createQuestion = item => {
+        return (
+          <div key={item.id}>
+            <p className=
+              {`questions__inner-title${item.attemptedToAnswer ? ' attempted' : ' not__attempted'}${item.checked ? ' checked' : ''}`}>
+              {he.decode(item.question)}
+            </p>
+            {button(item)}
+          </div>
+        )
+      };
+
       return (
-        question.map((item => {
-          return (
-            <div key={item.id}>
-              <p className=
-                {`questions__inner-title${item.attemptedToAnswer ? ' attempted' : ' not__attempted'}${item.checked ? ' checked' : ''}`}>
-                {he.decode(item.question)}
-              </p>
-              {button(item)}
-            </div>
-          )
-        }))
+        question.map(createQuestion)
       )
     });
   }, [question, questionsChecked])
@@ -98,28 +105,30 @@ function App() {
   }
 
   function setAnswer(id, parentId) {
-    setQuestion(prevQuestion => {
-      return prevQuestion.map(item => {
-        item.allQuestions.forEach(itemProps => {
 
-          // only allow one selection per question
-          if (itemProps.parentId === parentId) {
-            itemProps.selected = false;
-          }
+    const toggleAnswers = item => {
+      item.allQuestions.forEach(itemProps => {
 
-          // toggle selected property
-          if (itemProps.id === id) {
-            itemProps.selected = !itemProps.selected;
-            itemProps.answer === item.correct_answer ? item.answeredCorrectly = true : item.answeredCorrectly = false;
-            itemProps.selected ? item.attemptedToAnswer = true : item.attemptedToAnswer = false;
-            return itemProps
-          }
-        })
+        // only allow one selection per question
+        if (itemProps.parentId === parentId) {
+          itemProps.selected = false;
+        }
 
-        return {
-          ...item
+        // toggle selected property
+        if (itemProps.id === id) {
+          itemProps.selected = !itemProps.selected;
+          itemProps.answer === item.correct_answer ? item.answeredCorrectly = true : item.answeredCorrectly = false;
+          itemProps.selected ? item.attemptedToAnswer = true : item.attemptedToAnswer = false;
+          return itemProps
         }
       })
+
+      return {
+        ...item
+      }
+    }
+    setQuestion(prevQuestion => {
+      return prevQuestion.map(toggleAnswers)
     })
   }
 
